@@ -13,35 +13,35 @@ Tmux plugin to notify you when processes are finished.
 
 ## Table of Contents <!-- omit in toc -->
 
-*   [Use cases](#use-cases)
-*   [Pre-requisites](#pre-requisites)
-*   [Install](#install)
-*   [Usage](#usage)
-*   [Configuration](#configuration)
-    *   [Enable verbose notification](#enable-verbose-notification)
-    *   [Change monitor update period](#change-monitor-update-period)
-    *   [Add additional shell suffixes](#add-additional-shell-suffixes)
-    *   [Enable telegram channel notifications](#enable-telegram-channel-notifications)
-    *   [Enable Pushover notifications](#enable-pushover-notifications)
-    *   [Execute custom notification commands](#execute-custom-notification-commands)
-*   [How does it work](#how-does-it-work)
-*   [Other use cases](#other-use-cases)
-    *   [Use inside a docker container](#use-inside-a-docker-container)
-*   [Contributing](#contributing)
-*   [References](#references)
+* [Use cases](#use-cases)
+* [Pre-requisites](#pre-requisites)
+* [Install](#install)
+* [Usage](#usage)
+* [Configuration](#configuration)
+    * [Enable verbose notification](#enable-verbose-notification)
+    * [Change monitor update period](#change-monitor-update-period)
+    * [Add additional shell suffixes](#add-additional-shell-suffixes)
+    * [Enable telegram channel notifications](#enable-telegram-channel-notifications)
+    * [Enable Pushover notifications](#enable-pushover-notifications)
+    * [Execute custom notification commands](#execute-custom-notification-commands)
+* [How does it work](#how-does-it-work)
+* [Other use cases](#other-use-cases)
+    * [Use inside a docker container](#use-inside-a-docker-container)
+* [Contributing](#contributing)
+* [References](#references)
 
 ## Use cases
 
-*   When you have already started a process in a pane and wish to be notified (i.e. you can't use a manual trigger).
-*   Working in different containers (Docker) -> can't choose the shell -> and can't use a shell-level feature.
-*   Working over ssh, but your Tmux is on the client side.
+* When you have already started a process in a pane and wish to be notified (i.e. you can't use a manual trigger).
+* Working in different containers (Docker) -> can't choose the shell -> and can't use a shell-level feature.
+* Working over ssh, but your Tmux is on the client side.
 
 ## Pre-requisites
 
-*   Bash
-*   Tmux
-*   `notify-send` or `osascript`.
-*   **Optional**: `wget` (for telegram notifications).
+* Bash
+* Tmux
+* `notify-send` or `osascript`.
+* **Optional**: `wget` (for telegram notifications).
 
 > \[!NOTE]\
 > Works on Linux and macOS (note: only actively tested on Linux).
@@ -58,11 +58,9 @@ Use `prefix + I` to install.
 
 ## Usage
 
-*   `prefix + m`: Start monitoring a pane and notify when it finishes.
+* `prefix + m`: Toggle monitoring a pane and notify when it finishes.
 
-*   `prefix + alt + m`: Start monitoring a pane, return it in focus and notify when it finishes.
-
-*   `prefix + M`: Cancel monitoring of a pane.
+* `prefix + alt + m`: Start monitoring a pane, return it in focus and notify when it finishes.
 
 > \[!IMPORTANT]\
 > There is a known issue with alt-based Tmux shortcuts on osx. If you encounter problems, please check [this post](https://superuser.com/questions/649960/option-key-does-not-work-as-meta-in-tmux) for a workaround.
@@ -75,18 +73,18 @@ The default notification text is `Tmux pane task completed!`. This tool also con
 
 > To enable this, put `set -g @tnotify-verbose 'on'` in the `.tmux.conf` config file.
 
-#### Change the verbose notification message
+#### Change the verbose notification title
 
-To change the verbose notification text, put `set -g @tnotify-verbose-msg 'put your notification text here'` in the `.tmux.conf` config file. You can use all the Tmux variables in your notification text. Some useful Tmux aliases are:
+To change the verbose notification title text, put `set -g @tnotify-verbose-title 'put your notification text here'` in the `.tmux.conf` config file. You can use all the Tmux variables in your notification text. Some useful Tmux aliases are:
 
-*   `#D`: Pane id
-*   `#P`: Pane index
-*   `#T`: Pane title
-*   `#S`: Session name
-*   `#I`: Window index
-*   `#W`: Window name
+* `#D`: Pane id
+* `#P`: Pane index
+* `#T`: Pane title
+* `#S`: Session name
+* `#I`: Window index
+* `#W`: Window name
 
-For the complete list of aliases and variables, you are referred to the `FORMATS` section of the [tmux manual](http://man7.org/linux/man-pages/man1/tmux.1.html). You can also add a notification title using `set -g @tnotify-verbose-title`. Doing so will move the verbose notification text into the notification body.
+For the complete list of aliases and variables, you are referred to the `FORMATS` section of the [tmux manual](http://man7.org/linux/man-pages/man1/tmux.1.html).
 
 ### Change monitor update period
 
@@ -117,9 +115,9 @@ By default, the tool only sends operating system notifications. It can, however,
 
 After enabling this option, the following key bindings are available:
 
-*   `prefix + ctrl + m`: Start monitoring pane and notify in bash and telegram when it finishes.
+* `prefix + ctrl + m`: Start monitoring pane and notify in bash and telegram when it finishes.
 
-*   `prefix + ctrl + alt + m`: Start monitoring a pane, return it in focus and notify in bash and telegram when it finishes.
+* `prefix + ctrl + alt + m`: Start monitoring a pane, return it in focus and notify in bash and telegram when it finishes.
 
 Additionally, you can use the `set -g @tnotify-telegram-all 'on'` option to send all notifications to telegram.
 
@@ -166,5 +164,5 @@ Feel free to open an issue if you have ideas on how to make this GitHub action b
 
 ## References
 
-*   The initial version of this tool was developed by [@ChanderG](https://github.com/ChanderG).
-*   Icon created with svg made by [@chanut](https://www.flaticon.com/authors/chanut) from [www.flaticon.com](https://www.flaticon.com/authors/chanut)
+* The initial version of this tool was developed by [@ChanderG](https://github.com/ChanderG).
+* Icon created with svg made by [@chanut](https://www.flaticon.com/authors/chanut) from [www.flaticon.com](https://www.flaticon.com/authors/chanut)

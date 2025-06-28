@@ -9,7 +9,7 @@ else
 fi
 
 # Get ID's
-export SESSION_ID=$(tmux display-message -p '#{session_id}'  | tr -d $)
+export SESSION_ID=$(tmux display-message -p '#{session_id}' | tr -d $)
 export WINDOW_ID=$(tmux display-message -p '#{window_id}' | tr -d @)
 export PANE_ID=$(tmux display-message -p '#{pane_id}' | tr -d %)
 export PID_FILE_PATH="${PID_DIR}/${PANE_ID}.pid"
@@ -23,10 +23,8 @@ export custom_notify_command_default="bash ~/Desktop/test.bash"
 # Notification verbosity settings
 export verbose_option="@tnotify-verbose"
 export verbose_default="off"
-export verbose_msg_option="@tnotify-verbose-msg"
-export verbose_msg_default="(#S, #I:#P) Tmux pane task completed!"
 export verbose_title_option="@tnotify-verbose-title"
-export verbose_title_default=""
+export verbose_title_default="Terminal"
 
 # Monitor checker interval
 export monitor_sleep_duration="@tnotify-sleep-duration"
