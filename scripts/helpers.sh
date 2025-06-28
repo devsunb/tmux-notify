@@ -58,7 +58,7 @@ pushover_available() {
 # Send telegram message
 # Usage: send_telegram_message <bot_id> <chat_id> <message>
 send_telegram_message() {
-  wget --spider "https://api.telegram.org/bot$1/sendMessage?chat_id=$2&text=${3// /%20}" &> /dev/null
+  wget --spider "https://api.telegram.org/bot$1/sendMessage?chat_id=$2&text=${3// /%20}" &>/dev/null
 }
 
 # Send a message over https://pushover.net/
@@ -75,19 +75,23 @@ send_pushover_message() {
             \"user\": \"$2\",
             \"message\": \"$4\",
             \"title\": \"$3\"
-        }" &> /dev/null
+        }" &>/dev/null
 }
 
 # Send notification
 # Usage: notify <message> <title> <send_telegram>
 notify() {
   # Switch notification method based on OS
+  # tmux display-message "$OSTYPE"
   if [[ "$OSTYPE" =~ ^darwin ]]; then # If macOS
-    if [ -n "$2" ]; then
-      osascript -e 'display notification "'"$1"'" with title "'"$2"'"'
-    else
-      osascript -e 'display notification "'"$1"'" with title "tmux-notify"'
-    fi
+    echo "$1" | terminal-notifier \
+      -title "$2" \
+      -activate 'com.github.wez.wezterm' \
+      -execute "
+        /opt/homebrew/bin/tmux switchc -t '\$$SESSION_ID'
+        /opt/homebrew/bin/tmux select-window -t '@$WINDOW_ID'
+        /opt/homebrew/bin/tmux select-pane -t '%$PANE_ID'
+      "
   else
     # notify-send does not always work due to changing dbus params
     # see https://superuser.com/questions/1118878/using-notify-send-in-a-tmux-session-shows-error-no-notification#1118896
@@ -97,7 +101,7 @@ notify() {
       notify-send "$1"
     fi
   fi
-  
+
   # Send telegram message if telegram variables are set, and telegram alert all is
   # enabled or if the $3 argument is set to true
   if telegram_available && (telegram_all_enabled || [ "$3" == "true" ]); then
@@ -112,7 +116,7 @@ notify() {
     local pushover_title="$(get_tmux_option "$tmux_notify_pushover_title" "$tmux_notify_pushover_title_default")"
     send_pushover_message "$pushover_token" "$pushover_user" "$pushover_title" "$1"
   fi
-  
+
   # trigger visual bell
   # your terminal emulator can be setup to set URGENT bit on visual bell
   # for eg, Xresources -> URxvt.urgentOnBell: true
