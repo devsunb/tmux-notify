@@ -35,6 +35,19 @@ verbose_enabled() {
   [ "$verbose_value" == "on" ]
 }
 
+# Check if shell prompt is present (task completed)
+has_shell_prompt() {
+  local pane_output="$1"
+  echo "$pane_output" | sed '/^[[:space:]]*$/d' | tail -n1 | grep -qE "$prompt_suffixes$"
+}
+
+# Get last executed command
+get_last_command() {
+  local pane_output="$1"
+  local prompt="❯"
+  echo "$pane_output" | grep -E "$prompt" | tail -n1 | sed "s/^$prompt //" | sed "s/^$prompt//"
+}
+
 # Check if the telegram alert all option is enabled
 telegram_all_enabled() {
   local alert_all="$(get_tmux_option "$tmux_notify_telegram_all" "$tmux_notify_telegram_all_default")"
@@ -79,43 +92,13 @@ send_pushover_message() {
 }
 
 # Send notification
-# Usage: notify <message> <title> <send_telegram>
+# Usage: notify <title> <subtitle> <message>
 notify() {
-  # Switch notification method based on OS
-  # tmux display-message "$OSTYPE"
-  if [[ "$OSTYPE" =~ ^darwin ]]; then # If macOS
-    echo "$1" | terminal-notifier \
-      -title "$2" \
-      -activate 'com.github.wez.wezterm' \
-      -execute "
-        /opt/homebrew/bin/tmux switchc -t '\$$SESSION_ID'
-        /opt/homebrew/bin/tmux select-window -t '@$WINDOW_ID'
-        /opt/homebrew/bin/tmux select-pane -t '%$PANE_ID'
-      "
-  else
-    # notify-send does not always work due to changing dbus params
-    # see https://superuser.com/questions/1118878/using-notify-send-in-a-tmux-session-shows-error-no-notification#1118896
-    if [ -n "$2" ]; then
-      notify-send "$2" "$1"
-    else
-      notify-send "$1"
-    fi
-  fi
-
-  # Send telegram message if telegram variables are set, and telegram alert all is
-  # enabled or if the $3 argument is set to true
-  if telegram_available && (telegram_all_enabled || [ "$3" == "true" ]); then
-    telegram_bot_id="$(get_tmux_option "$tmux_notify_telegram_bot_id" "$tmux_notify_telegram_bot_id_default")"
-    telegram_chat_id="$(get_tmux_option "$tmux_notify_telegram_channel_id" "$tmux_notify_telegram_channel_id_default")"
-    send_telegram_message $telegram_bot_id $telegram_chat_id "$1"
-  fi
-
-  if pushover_available; then
-    local pushover_token="$(get_tmux_option "$tmux_notify_pushover_token" "$tmux_notify_pushover_token_default")"
-    local pushover_user="$(get_tmux_option "$tmux_notify_pushover_user" "$tmux_notify_pushover_user_default")"
-    local pushover_title="$(get_tmux_option "$tmux_notify_pushover_title" "$tmux_notify_pushover_title_default")"
-    send_pushover_message "$pushover_token" "$pushover_user" "$pushover_title" "$1"
-  fi
+  echo "$3" | terminal-notifier \
+    -title "$1" \
+    -subtitle "$2" \
+    -activate 'com.github.wez.wezterm' \
+    -execute "/opt/homebrew/bin/tmux switchc -t '\$$SESSION_ID'; /opt/homebrew/bin/tmux select-window -t '@$WINDOW_ID'; /opt/homebrew/bin/tmux select-pane -t '%$PANE_ID'"
 
   # trigger visual bell
   # your terminal emulator can be setup to set URGENT bit on visual bell
